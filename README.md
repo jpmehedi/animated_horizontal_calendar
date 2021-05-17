@@ -22,8 +22,7 @@ samples, guidance on mobile development, and a full API reference.
 ## depandancy packeges
 - intl
 ## App Demo
-
-![](https://user-images.githubusercontent.com/29401466/118531942-3b0b2500-b768-11eb-9f2a-b9388cd0a9f3.mp4)
+![Edited_20210517_233106](https://user-images.githubusercontent.com/29401466/118532752-1fece500-b769-11eb-8634-d8dd18eab4a3.gif)
 
 ## Example
 This plugin allow you to do custom styles and shapes for Selected and UnSelected dates
