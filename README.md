@@ -27,14 +27,23 @@ samples, guidance on mobile development, and a full API reference.
 ## Example
 This plugin allow you to do custom styles and shapes for Selected and UnSelected dates
 ```dart
-    AnimatedHorizontalCalendar(
-        date: DateTime.now(),
-        textColor: Colors.black45,
-        backgroundColor: Colors.white,
-        selectedColor: Color(0xff092B47),
-        iconColor: Colors.white,
-        onDateSelected: (date){
-           selectedDate = date;
-       } 
-    ),
+      Container(
+        height: 100,
+        child: AnimatedHorizontalCalendar(
+          tableCalenderIcon: Icon(Icons.calendar_today, color: Colors.white,),
+          date: DateTime.now(),
+          textColor: Colors.black45,
+          backgroundColor: Colors.white,
+          tableCalenderThemeData:  ThemeData.light().copyWith(
+            primaryColor: Colors.green,
+            accentColor: Colors.red,
+            colorScheme: ColorScheme.light(primary: Colors.green),
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+          ),
+          selectedColor: Colors.redAccent,
+          onDateSelected: (date){
+            selectedDate = date;
+         } 
+       ),
+      ),
 ```
