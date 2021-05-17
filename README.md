@@ -22,11 +22,10 @@ samples, guidance on mobile development, and a full API reference.
 ## depandancy packeges
 - intl
 ## App Demo
-| | |
-|----|-----|
-|![Edited_20210517_233106](https://user-images.githubusercontent.com/29401466/118532752-1fece500-b769-11eb-8634-d8dd18eab4a3.gif)| ![Horizontal_Calender](https://user-images.githubusercontent.com/29401466/118534108-aeae3180-b76a-11eb-8379-379f9309383e.jpg)|
-|----|-----|
-|![Edited_20210517_233106](https://user-images.githubusercontent.com/29401466/118534569-35fba500-b76b-11eb-9661-b579189aef9e.jpg)| |
+| | | |
+|----|-----|-----|
+|![Edited_20210517_233106](https://user-images.githubusercontent.com/29401466/118532752-1fece500-b769-11eb-8634-d8dd18eab4a3.gif)| ![Horizontal_Calender](https://user-images.githubusercontent.com/29401466/118534108-aeae3180-b76a-11eb-8379-379f9309383e.jpg)|![Edited_20210517_233106](https://user-images.githubusercontent.com/29401466/118534569-35fba500-b76b-11eb-9661-b579189aef9e.jpg)|
+
 
 
 ## Example
