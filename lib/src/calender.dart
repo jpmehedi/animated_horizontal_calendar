@@ -10,31 +10,31 @@ typedef OnDateSelected(date);
 
 class AnimatedHorizontalCalendar extends StatefulWidget {
   final DateTime date;
-  final DateTime initialDate;
-  final DateTime lastDate;
-  final Color textColor;
-  final Color colorOfWeek;
-  final Color colorOfMonth;
-  final double fontSizeOfWeek;
-  final FontWeight fontWeightWeek;
-  final double fontSizeOfMonth;
-  final FontWeight fontWeightMonth;
-  final Color backgroundColor;
-  final Color selectedColor;
-  final int duration;
-  final Curve curve;
-  final BoxShadow selectedBoxShadow;
-  final BoxShadow unSelectedBoxShadow;
+  final DateTime? initialDate;
+  final DateTime? lastDate;
+  final Color? textColor;
+  final Color? colorOfWeek;
+  final Color? colorOfMonth;
+  final double? fontSizeOfWeek;
+  final FontWeight? fontWeightWeek;
+  final double? fontSizeOfMonth;
+  final FontWeight? fontWeightMonth;
+  final Color? backgroundColor;
+  final Color? selectedColor;
+  final int? duration;
+  final Curve? curve;
+  final BoxShadow? selectedBoxShadow;
+  final BoxShadow? unSelectedBoxShadow;
   final OnDateSelected onDateSelected;
   final Widget tableCalenderIcon;
-  final Color tableCalenderButtonColor;
-  final ThemeData tableCalenderThemeData;
+  final Color? tableCalenderButtonColor;
+  final ThemeData? tableCalenderThemeData;
 
 
   AnimatedHorizontalCalendar({
-    Key key,
-    @required this.date,
-    @required this.tableCalenderIcon,
+    Key? key,
+    required this.date,
+    required this.tableCalenderIcon,
     this.initialDate,
     this.lastDate,
     this.textColor,
@@ -52,7 +52,7 @@ class AnimatedHorizontalCalendar extends StatefulWidget {
     this.fontWeightMonth,
     this.backgroundColor,
     this.selectedColor,
-    @required this.onDateSelected,
+    required this.onDateSelected,
 
   }) : super(key: key);
 
@@ -61,8 +61,8 @@ class AnimatedHorizontalCalendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<AnimatedHorizontalCalendar> {
-  DateTime _startDate;
-  var selectedCalenderDate;
+  late DateTime _startDate;
+  late var selectedCalenderDate;
   ScrollController _scrollController = new ScrollController();
 
   calenderAnimation () {
@@ -190,7 +190,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
               color: backgroundColor,
               child: InkWell(
                 onTap: () async{
-                DateTime date = await selectDate();
+                DateTime date = await (selectDate() as Future<DateTime>);
                 widget.onDateSelected(Utils.getDate(date));
                 setState(() => selectedCalenderDate = date);
                 },
@@ -214,12 +214,12 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
       ),
     );
   }
-  Future<DateTime> selectDate() async {
+  Future<DateTime?> selectDate() async {
     return await showDatePicker(
       context: context,
       initialDatePickerMode: DatePickerMode.day,
       initialDate: selectedCalenderDate,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         return Theme(
           data: widget.tableCalenderThemeData ?? ThemeData.light().copyWith(
             primaryColor: secondaryColor,
@@ -227,7 +227,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
             colorScheme: ColorScheme.light(primary: secondaryColor),
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
-          child: child,
+          child: child!,
         );
       },
       firstDate: widget.initialDate ?? DateTime.now().subtract(Duration(days: 30)),
