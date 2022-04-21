@@ -1,11 +1,11 @@
 name: animated_horizontal_calendar
 description:  A flutter plugin to show animated horizontal view of calendar with date picker.
-version: 0.0.1
+version: 0.4.0
 author: Mehedi Hasan<mehedihasaninfrom@gmail.com>
 homepage: https://github.com/jpmehedi/animated_horizontal_calendar
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
