@@ -142,40 +142,42 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                     ),
                     margin: EdgeInsets.only(left: 8,right: 8, top: 8),
                     // ignore: deprecated_member_use
-                    child: FlatButton(
+                    child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 2.0),
-                      onPressed: () {
-                        widget.onDateSelected!(Utils.getDate(_date!));
-                        setState(() {
-                          selectedCalenderDate = _startDate?.add(Duration(days: index));
-                          _startDate = _startDate?.add(Duration(days: index));
-                        });
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            Utils.getDayOfWeek(_date!),
-                            style: TextStyle(
+                      child: TextButton(
+                        onPressed: () {
+                          widget.onDateSelected!(Utils.getDate(_date!));
+                          setState(() {
+                            selectedCalenderDate = _startDate?.add(Duration(days: index));
+                            _startDate = _startDate?.add(Duration(days: index));
+                          });
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              Utils.getDayOfWeek(_date!),
+                              style: TextStyle(
+                                  color: diffDays != 0
+                                      ? widget.colorOfWeek ?? secondaryTextColor
+                                      : Colors.white,
+                                  fontSize: widget.fontSizeOfWeek ?? 12.0,
+                                  fontWeight: widget.fontWeightWeek ?? FontWeight.w600
+                              ),
+                            ),
+                            SizedBox(height: 2.0),
+                            Text(
+                              Utils.getDayOfMonth(_date),
+                              style: TextStyle(
                                 color: diffDays != 0
-                                    ? widget.colorOfWeek ?? secondaryTextColor
+                                    ? widget.colorOfMonth ?? primaryTextColor
                                     : Colors.white,
-                                fontSize: widget.fontSizeOfWeek ?? 12.0,
-                                fontWeight: widget.fontWeightWeek ?? FontWeight.w600
+                                fontSize: widget.fontSizeOfMonth ?? 20.0,
+                                fontWeight: widget.fontWeightMonth ?? FontWeight.w700,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 2.0),
-                          Text(
-                            Utils.getDayOfMonth(_date),
-                            style: TextStyle(
-                              color: diffDays != 0
-                                  ? widget.colorOfMonth ?? primaryTextColor
-                                  : Colors.white,
-                              fontSize: widget.fontSizeOfMonth ?? 20.0,
-                              fontWeight: widget.fontWeightMonth ?? FontWeight.w700,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
