@@ -24,14 +24,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedDate;
+  var selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Animated Calender Example"),
-      ),
+      appBar: AppBar(title: Text("Animated Calender Example")),
 
       ///This is demo use [AnimatedHorizontalCalendar] calender
       ///You can customized all property
@@ -39,23 +37,26 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         height: 100,
         child: AnimatedHorizontalCalendar(
-            tableCalenderIcon: Icon(
-              Icons.calendar_today,
-              color: Colors.white,
-            ),
-            date: DateTime.now(),
-            textColor: Colors.black45,
-            backgroundColor: Colors.white,
-            tableCalenderThemeData: ThemeData.light().copyWith(
-              primaryColor: Colors.green,
-              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-              colorScheme: ColorScheme.light(primary: Colors.green)
-                  .copyWith(secondary: Colors.red),
-            ),
-            selectedColor: Colors.redAccent,
-            onDateSelected: (date) {
-              selectedDate = date;
-            }),
+          current: DateTime.now(),
+          tableCalenderIcon: Icon(
+            Icons.calendar_today,
+            color: Colors.white,
+          ),
+          date: selectedDate,
+          textColor: Colors.black45,
+          backgroundColor: Colors.white,
+          tableCalenderThemeData: ThemeData.light().copyWith(
+            primaryColor: Colors.green,
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            colorScheme: ColorScheme.light(primary: Colors.green)
+                .copyWith(secondary: Colors.red),
+          ),
+          selectedColor: Colors.redAccent,
+          selectPrevious: false,
+          onDateSelected: (date) {
+            selectedDate = date;
+          },
+        ),
       ),
     );
   }

@@ -1,13 +1,12 @@
-
 import 'package:animated_horizontal_calendar/utils/calender_utils.dart';
 import 'package:animated_horizontal_calendar/utils/color.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 
 typedef OnDateSelected(date);
 
 class AnimatedHorizontalCalendar extends StatefulWidget {
-  final DateTime date;
+  final DateTime date, current;
   final DateTime? initialDate;
   final DateTime? lastDate;
   final Color? textColor;
@@ -27,10 +26,11 @@ class AnimatedHorizontalCalendar extends StatefulWidget {
   final Widget tableCalenderIcon;
   final Color? tableCalenderButtonColor;
   final ThemeData? tableCalenderThemeData;
-
+  final bool selectPrevious;
 
   AnimatedHorizontalCalendar({
     Key? key,
+    required this.current,
     required this.date,
     required this.tableCalenderIcon,
     this.initialDate,
@@ -50,8 +50,8 @@ class AnimatedHorizontalCalendar extends StatefulWidget {
     this.fontWeightMonth,
     this.backgroundColor,
     this.selectedColor,
-    @required this.onDateSelected,
-
+    required this.onDateSelected,
+    this.selectPrevious = true,
   }) : super(key: key);
 
   @override
@@ -63,7 +63,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
   var selectedCalenderDate;
   ScrollController _scrollController = new ScrollController();
 
-  calenderAnimation () {
+  calenderAnimation() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: Duration(seconds: widget.duration ?? 1),
@@ -77,6 +77,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
     selectedCalenderDate = widget.date;
   }
 
+  String format(DateTime date) => DateFormat('dd-MM-yy').format(date);
 
   @override
   Widget build(BuildContext context) {
@@ -84,19 +85,20 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
 
     DateTime findFirstDateOfTheWeek(DateTime dateTime) {
       if (dateTime.weekday == 7) {
-        if(_scrollController.hasClients) {
+        if (_scrollController.hasClients) {
           calenderAnimation();
         }
-        return  dateTime;
+        return dateTime;
       } else {
-        if(dateTime.weekday == 1 || dateTime.weekday == 2) {
-          if(_scrollController.hasClients) {
+        if (dateTime.weekday == 1 || dateTime.weekday == 2) {
+          if (_scrollController.hasClients) {
             calenderAnimation();
           }
         }
         return dateTime.subtract(Duration(days: dateTime.weekday));
       }
     }
+
     _startDate = findFirstDateOfTheWeek(selectedCalenderDate);
 
     return SingleChildScrollView(
@@ -106,7 +108,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
       child: Container(
         child: Row(
           children: <Widget>[
-            SizedBox(width: 10,),
+            SizedBox(width: 10),
             ListView.builder(
               itemCount: 7,
               shrinkWrap: true,
@@ -121,73 +123,101 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         color: diffDays != 0
-                            ? widget.backgroundColor ??
-                            Colors.white
+                            ? widget.backgroundColor ?? Colors.white
                             : widget.selectedColor ?? Colors.blue,
-                        border: diffDays == 0 ? Border.all(color: white.withOpacity(0.95), width: 2) : Border.all(color: black.withOpacity(0.25), width: 1),
+                        border: diffDays == 0
+                            ? Border.all(
+                                color: white.withOpacity(0.95), width: 2)
+                            : Border.all(
+                                color: black.withOpacity(0.25), width: 1),
                         borderRadius: BorderRadius.circular(8.0),
                         boxShadow: [
-                          diffDays != 0 ? widget.selectedBoxShadow ?? BoxShadow(
-                            color: black.withOpacity(0.25),
-                            spreadRadius: 0.0,
-                            blurRadius: 10,
-                            offset: Offset(0, 4), // changes position of shadow
-                          ) : widget.unSelectedBoxShadow ?? BoxShadow(
-                            color: primaryColor.withOpacity(0.35),
-                            spreadRadius: 2.0,
-                            blurRadius: 10,
-                            offset: Offset(0, 4), // changes position of shadow
-                          )
-                        ]
-                    ),
-                    margin: EdgeInsets.only(left: 8,right: 8, top: 8),
+                          diffDays != 0
+                              ? widget.selectedBoxShadow ??
+                                  BoxShadow(
+                                    color: black.withOpacity(0.25),
+                                    spreadRadius: 0.0,
+                                    blurRadius: 10,
+                                    offset: Offset(
+                                        0, 4), // changes position of shadow
+                                  )
+                              : widget.unSelectedBoxShadow ??
+                                  BoxShadow(
+                                    color: primaryColor.withOpacity(0.35),
+                                    spreadRadius: 2.0,
+                                    blurRadius: 10,
+                                    offset: Offset(
+                                        0, 4), // changes position of shadow
+                                  )
+                        ]),
+                    margin: EdgeInsets.only(left: 8, right: 8, top: 8),
                     // ignore: deprecated_member_use
-                    child: FlatButton(
-                      padding: EdgeInsets.symmetric(horizontal: 2.0),
-                      onPressed: () {
-                        widget.onDateSelected!(Utils.getDate(_date!));
-                        setState(() {
-                          selectedCalenderDate = _startDate?.add(Duration(days: index));
-                          _startDate = _startDate?.add(Duration(days: index));
-                        });
+                    child: GestureDetector(
+                      onTap: () {
+                        if (!widget.selectPrevious) {
+                          bool check = (_date!.isAfter(widget.current) ||
+                              format(_date) == format(widget.current));
+                          if (widget.onDateSelected != null && check) {
+                            widget.onDateSelected!(_date);
+                            setState(() {
+                              selectedCalenderDate =
+                                  _startDate?.add(Duration(days: index));
+                              _startDate =
+                                  _startDate?.add(Duration(days: index));
+                            });
+                          }
+                        } else {
+                          widget.onDateSelected!(_date);
+                          setState(() {
+                            selectedCalenderDate =
+                                _startDate?.add(Duration(days: index));
+                            _startDate = _startDate?.add(Duration(days: index));
+                          });
+                        }
                       },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            Utils.getDayOfWeek(_date!),
-                            style: TextStyle(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              Utils.getDayOfWeek(_date!),
+                              style: TextStyle(
+                                  color: diffDays != 0
+                                      ? widget.colorOfWeek ?? secondaryTextColor
+                                      : Colors.white,
+                                  fontSize: widget.fontSizeOfWeek ?? 12.0,
+                                  fontWeight:
+                                      widget.fontWeightWeek ?? FontWeight.w600),
+                            ),
+                            SizedBox(height: 2.0),
+                            Text(
+                              Utils.getDayOfMonth(_date),
+                              style: TextStyle(
                                 color: diffDays != 0
-                                    ? widget.colorOfWeek ?? secondaryTextColor
+                                    ? widget.colorOfMonth ?? primaryTextColor
                                     : Colors.white,
-                                fontSize: widget.fontSizeOfWeek ?? 12.0,
-                                fontWeight: widget.fontWeightWeek ?? FontWeight.w600
+                                fontSize: widget.fontSizeOfMonth ?? 20.0,
+                                fontWeight:
+                                    widget.fontWeightMonth ?? FontWeight.w700,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 2.0),
-                          Text(
-                            Utils.getDayOfMonth(_date),
-                            style: TextStyle(
-                              color: diffDays != 0
-                                  ? widget.colorOfMonth ?? primaryTextColor
-                                  : Colors.white,
-                              fontSize: widget.fontSizeOfMonth ?? 20.0,
-                              fontWeight: widget.fontWeightMonth ?? FontWeight.w700,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 );
               },
             ),
-            SizedBox(width: 10,),
+            SizedBox(
+              width: 10,
+            ),
             Container(
               padding: EdgeInsets.only(bottom: 20, top: 8),
               color: backgroundColor,
               child: InkWell(
-                onTap: () async{
+                onTap: () async {
                   DateTime? date = await selectDate();
                   widget.onDateSelected!(Utils.getDate(date!));
                   setState(() => selectedCalenderDate = date);
@@ -198,8 +228,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                   decoration: BoxDecoration(
                       color: widget.tableCalenderButtonColor ?? primaryColor,
                       border: Border.all(color: grey, width: 1),
-                      borderRadius: BorderRadius.circular(8.0)
-                  ),
+                      borderRadius: BorderRadius.circular(8.0)),
                   child: widget.tableCalenderIcon,
                 ),
               ),
@@ -212,6 +241,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
       ),
     );
   }
+
   Future<DateTime?> selectDate() async {
     return await showDatePicker(
       context: context,
@@ -219,13 +249,19 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
       initialDate: selectedCalenderDate,
       builder: (BuildContext context, Widget? child) {
         return Theme(
-          data: widget.tableCalenderThemeData ?? ThemeData.light().copyWith(
-            primaryColor: secondaryColor,
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary), colorScheme: ColorScheme.light(primary: secondaryColor).copyWith(secondary: secondaryColor),
-          ), child: child ?? SizedBox(),
+          data: widget.tableCalenderThemeData ??
+              ThemeData.light().copyWith(
+                primaryColor: secondaryColor,
+                buttonTheme:
+                    ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                colorScheme: ColorScheme.light(primary: secondaryColor)
+                    .copyWith(secondary: secondaryColor),
+              ),
+          child: child ?? SizedBox(),
         );
       },
-      firstDate: widget.initialDate ?? DateTime.now().subtract(Duration(days: 30)),
+      firstDate:
+          widget.initialDate ?? DateTime.now().subtract(Duration(days: 30)),
       lastDate: widget.lastDate ?? DateTime.now().add(Duration(days: 30)),
     );
   }
