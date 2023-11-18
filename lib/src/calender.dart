@@ -212,32 +212,28 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                 );
               },
             ),
-            SizedBox(
-              width: 10,
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 20, top: 8),
-              color: backgroundColor,
-              child: GestureDetector(
-                onTap: () async {
-                  DateTime date = await selectDate() ?? DateTime.now();
-                  widget.onDateSelected!(Utils.getDate(date));
-                  setState(() => selectedCalenderDate = date);
-                },
-                child: Container(
-                  height: double.infinity,
-                  width: (width - 10) * 0.1428,
-                  decoration: BoxDecoration(
-                      color: widget.tableCalenderButtonColor ?? primaryColor,
-                      // border: Border.all(color: grey, width: 1),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: widget.tableCalenderIcon,
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 20, top: 8),
+                child: InkWell(
+                  onTap: () async {
+                    DateTime date = await selectDate() ?? DateTime.now();
+                    widget.onDateSelected!(Utils.getDate(date));
+                    setState(() => selectedCalenderDate = date);
+                  },
+                  child: Container(
+                    height: double.infinity,
+                    width: (width - 10) * 0.1428,
+                    decoration: BoxDecoration(
+                        color: widget.tableCalenderButtonColor ?? primaryColor,
+                        border: Border.all(color: grey, width: 1),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: widget.tableCalenderIcon,
+                  ),
                 ),
               ),
             ),
-            SizedBox(
-              width: 15,
-            )
           ],
         ),
       ),
