@@ -216,7 +216,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               child: Padding(
                 padding: EdgeInsets.only(bottom: 20, top: 8),
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () async {
                     DateTime date = await selectDate() ?? DateTime.now();
                     widget.onDateSelected!(Utils.getDate(date));
