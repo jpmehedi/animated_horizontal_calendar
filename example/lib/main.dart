@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selectedColor: Colors.redAccent,
           selectPrevious: false,
           onDateSelected: (date) {
-            selectedDate = date;
+            selectedDate = DateTime.parse(date);
           },
         ),
       ),

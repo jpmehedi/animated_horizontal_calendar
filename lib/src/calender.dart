@@ -3,7 +3,7 @@ import 'package:animated_horizontal_calendar/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-typedef OnDateSelected(date);
+typedef OnDateSelected(String date);
 
 class AnimatedHorizontalCalendar extends StatefulWidget {
   final DateTime date, current;
@@ -160,7 +160,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                           bool check = (_date.isAfter(widget.current) ||
                               format(_date) == format(widget.current));
                           if (widget.onDateSelected != null && check) {
-                            widget.onDateSelected!(_date);
+                            widget.onDateSelected!(_date.toString());
                             setState(() {
                               selectedCalenderDate =
                                   _startDate?.add(Duration(days: index));
@@ -169,7 +169,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                             });
                           }
                         } else {
-                          widget.onDateSelected!(_date);
+                          widget.onDateSelected!(_date.toString());
                           setState(() {
                             selectedCalenderDate =
                                 _startDate?.add(Duration(days: index));
@@ -220,8 +220,8 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
               color: backgroundColor,
               child: InkWell(
                 onTap: () async {
-                  DateTime? date = await selectDate();
-                  widget.onDateSelected!(Utils.getDate(date!));
+                  DateTime date = await selectDate() ?? DateTime.now();
+                  widget.onDateSelected!(Utils.getDate(date));
                   setState(() => selectedCalenderDate = date);
                 },
                 child: Container(
