@@ -218,7 +218,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
             Container(
               padding: EdgeInsets.only(bottom: 20, top: 8),
               color: backgroundColor,
-              child: InkWell(
+              child: GestureDetector(
                 onTap: () async {
                   DateTime date = await selectDate() ?? DateTime.now();
                   widget.onDateSelected!(Utils.getDate(date));
@@ -229,7 +229,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                   width: (width - 10) * 0.1428,
                   decoration: BoxDecoration(
                       color: widget.tableCalenderButtonColor ?? primaryColor,
-                      border: Border.all(color: grey, width: 1),
+                      // border: Border.all(color: grey, width: 1),
                       borderRadius: BorderRadius.circular(8.0)),
                   child: widget.tableCalenderIcon,
                 ),
