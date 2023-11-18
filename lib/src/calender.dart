@@ -114,8 +114,10 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                DateTime? _date = _startDate?.add(Duration(days: index));
-                int? diffDays = _date?.difference(selectedCalenderDate).inDays;
+                //if _date is not provided, then DateTime.now
+                DateTime _date =
+                    _startDate?.add(Duration(days: index)) ?? DateTime.now();
+                int? diffDays = _date.difference(selectedCalenderDate).inDays;
                 return Container(
                   padding: EdgeInsets.only(bottom: 20, left: 0.0),
                   child: Container(
@@ -155,7 +157,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                     child: GestureDetector(
                       onTap: () {
                         if (!widget.selectPrevious) {
-                          bool check = (_date!.isAfter(widget.current) ||
+                          bool check = (_date.isAfter(widget.current) ||
                               format(_date) == format(widget.current));
                           if (widget.onDateSelected != null && check) {
                             widget.onDateSelected!(_date);
@@ -181,7 +183,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              Utils.getDayOfWeek(_date!),
+                              Utils.getDayOfWeek(_date),
                               style: TextStyle(
                                   color: diffDays != 0
                                       ? widget.colorOfWeek ?? secondaryTextColor
