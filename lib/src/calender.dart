@@ -249,12 +249,16 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
   }
 
   Future<DateTime?> selectDateFromIOS() async {
-    return await showCupertinoModalPopup(
+    return await showCupertinoDialog(
         context: context,
         builder: (context) {
-          return AdoptiveCalendar(
-            initialDate: DateTime.now(),
-            backgroundColor: backgroundColor,
+          return CupertinoActionSheet(
+            message: AdoptiveCalendar(
+              initialDate: DateTime.now(),
+              backgroundColor: backgroundColor,
+            ),
+            cancelButton: Text('Cancel'),
+            actions: [CupertinoButton(child: Text('Select'), onPressed: () {})],
           );
         });
   }
