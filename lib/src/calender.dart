@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:adoptive_calendar/adoptive_calendar.dart';
 import 'package:animated_horizontal_calendar/utils/calender_utils.dart';
 import 'package:animated_horizontal_calendar/utils/color.dart';
 import 'package:flutter/cupertino.dart';
@@ -252,21 +253,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
         context: context,
         builder: (context) {
           //If ios onIOSDateChanged param becomes a must
-          return CupertinoDatePicker(
-            onDateTimeChanged: widget.onIOSDateChanged ??
-                (time) {
-                  if (kDebugMode) {
-                    print('==>$time<==');
-                  }
-                },
-            maximumYear: 2060,
-            minimumDate:
-                widget.lastDate ?? DateTime.now().add(Duration(days: 30)),
-            maximumDate: widget.initialDate ??
-                DateTime.now().subtract(Duration(days: 30)),
-            mode: CupertinoDatePickerMode.date,
-            initialDateTime: selectedCalenderDate,
-          );
+          return AdoptiveCalendar(initialDate: DateTime.now(),backgroundColor: backgroundColor,);
         });
   }
 

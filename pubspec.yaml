@@ -10,6 +10,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  adoptive_calendar: ^0.0.5
   flutter:
     sdk: flutter
   intl: ^0.18.1
