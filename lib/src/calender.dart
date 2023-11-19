@@ -255,7 +255,6 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
           return CupertinoActionSheet(
             message: AdoptiveCalendar(
               initialDate: DateTime.now(),
-              backgroundColor: backgroundColor,
             ),
             cancelButton: Text('Cancel'),
             actions: [CupertinoButton(child: Text('Select'), onPressed: () {})],
