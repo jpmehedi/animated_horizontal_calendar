@@ -249,11 +249,13 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
   }
 
   Future<DateTime?> selectDateFromIOS() async {
-    return await showCupertinoDialog(
+    return await showCupertinoModalPopup(
         context: context,
         builder: (context) {
-          //If ios onIOSDateChanged param becomes a must
-          return AdoptiveCalendar(initialDate: DateTime.now(),backgroundColor: backgroundColor,);
+          return AdoptiveCalendar(
+            initialDate: DateTime.now(),
+            backgroundColor: backgroundColor,
+          );
         });
   }
 
