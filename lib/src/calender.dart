@@ -252,12 +252,18 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
     return await showCupertinoDialog(
         context: context,
         builder: (context) {
-          return CupertinoActionSheet(title: Text('Calendar'),
-            message: AdoptiveCalendar(
+          return CupertinoAlertDialog(
+            title: Text('Calendar'),
+            content: AdoptiveCalendar(
               initialDate: DateTime.now(),
             ),
-            cancelButton: Text('Cancel'),
-            actions: [CupertinoButton(child: Text('Select'), onPressed: () {})],
+            actions: [
+              CupertinoButton(
+                  child: Text('Select'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })
+            ],
           );
         });
   }
