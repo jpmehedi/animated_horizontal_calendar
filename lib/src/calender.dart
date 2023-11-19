@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:animated_horizontal_calendar/utils/calender_utils.dart';
 import 'package:animated_horizontal_calendar/utils/color.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -8,6 +11,7 @@ typedef OnDateSelected(String date);
 class AnimatedHorizontalCalendar extends StatefulWidget {
   final DateTime date, current;
   final DateTime? initialDate;
+  final void Function(DateTime)? onIOSDateChanged;
   final DateTime? lastDate;
   final Color? textColor;
   final Color? colorOfWeek;
@@ -52,6 +56,7 @@ class AnimatedHorizontalCalendar extends StatefulWidget {
     this.selectedColor,
     required this.onDateSelected,
     this.selectPrevious = true,
+    this.onIOSDateChanged,
   }) : super(key: key);
 
   @override
@@ -218,7 +223,9 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                 padding: EdgeInsets.only(bottom: 20, top: 8),
                 child: GestureDetector(
                   onTap: () async {
-                    DateTime date = await selectDate() ?? DateTime.now();
+                    DateTime date = Platform.isIOS
+                        ? await selectDateFromIOS() ?? DateTime.now()
+                        : await selectDateFromAndroid() ?? DateTime.now();
                     widget.onDateSelected!(Utils.getDate(date));
                     setState(() => selectedCalenderDate = date);
                   },
@@ -240,7 +247,30 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
     );
   }
 
-  Future<DateTime?> selectDate() async {
+  Future<DateTime?> selectDateFromIOS() async {
+    return await showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          //If ios onIOSDateChanged param becomes a must
+          return CupertinoDatePicker(
+            onDateTimeChanged: widget.onIOSDateChanged ??
+                (time) {
+                  if (kDebugMode) {
+                    print('==>$time<==');
+                  }
+                },
+            maximumYear: 2060,
+            minimumDate:
+                widget.lastDate ?? DateTime.now().add(Duration(days: 30)),
+            maximumDate: widget.initialDate ??
+                DateTime.now().subtract(Duration(days: 30)),
+            mode: CupertinoDatePickerMode.date,
+            initialDateTime: selectedCalenderDate,
+          );
+        });
+  }
+
+  Future<DateTime?> selectDateFromAndroid() async {
     return await showDatePicker(
       context: context,
       initialDatePickerMode: DatePickerMode.day,
