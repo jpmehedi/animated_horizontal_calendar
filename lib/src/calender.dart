@@ -252,7 +252,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
     return await showCupertinoDialog(
         context: context,
         builder: (context) {
-          return CupertinoActionSheet(
+          return CupertinoActionSheet(title: Text('Calendar'),
             message: AdoptiveCalendar(
               initialDate: DateTime.now(),
             ),
