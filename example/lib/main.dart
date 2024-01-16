@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:animated_horizontal_calendar/animated_horizontal_calendar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -39,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: AnimatedHorizontalCalendar(
           current: DateTime.now(),
           tableCalenderIcon: Icon(
-            Icons.calendar_today,
+            Platform.isIOS ? CupertinoIcons.calendar : Icons.calendar_today,
             color: Colors.white,
           ),
           date: selectedDate,
@@ -54,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
           selectedColor: Colors.redAccent,
           selectPrevious: false,
           onDateSelected: (date) {
-            selectedDate = date;
+            selectedDate = DateTime.parse(date);
           },
         ),
       ),

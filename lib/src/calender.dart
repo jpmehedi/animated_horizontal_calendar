@@ -1,13 +1,18 @@
+import 'dart:io';
+import 'package:adoptive_calendar/adoptive_calendar.dart';
 import 'package:animated_horizontal_calendar/utils/calender_utils.dart';
 import 'package:animated_horizontal_calendar/utils/color.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-typedef OnDateSelected(date);
+typedef OnDateSelected(String date);
 
 class AnimatedHorizontalCalendar extends StatefulWidget {
   final DateTime date, current;
   final DateTime? initialDate;
+  final void Function(DateTime)? onIOSDateChanged;
   final DateTime? lastDate;
   final Color? textColor;
   final Color? colorOfWeek;
@@ -52,6 +57,7 @@ class AnimatedHorizontalCalendar extends StatefulWidget {
     this.selectedColor,
     required this.onDateSelected,
     this.selectPrevious = true,
+    this.onIOSDateChanged,
   }) : super(key: key);
 
   @override
@@ -114,8 +120,10 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                DateTime? _date = _startDate?.add(Duration(days: index));
-                int? diffDays = _date?.difference(selectedCalenderDate).inDays;
+                //if _date is not provided, then DateTime.now
+                DateTime _date =
+                    _startDate?.add(Duration(days: index)) ?? DateTime.now();
+                int? diffDays = _date.difference(selectedCalenderDate).inDays;
                 return Container(
                   padding: EdgeInsets.only(bottom: 20, left: 0.0),
                   child: Container(
@@ -155,10 +163,10 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                     child: GestureDetector(
                       onTap: () {
                         if (!widget.selectPrevious) {
-                          bool check = (_date!.isAfter(widget.current) ||
+                          bool check = (_date.isAfter(widget.current) ||
                               format(_date) == format(widget.current));
                           if (widget.onDateSelected != null && check) {
-                            widget.onDateSelected!(_date);
+                            widget.onDateSelected!(_date.toString());
                             setState(() {
                               selectedCalenderDate =
                                   _startDate?.add(Duration(days: index));
@@ -167,7 +175,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                             });
                           }
                         } else {
-                          widget.onDateSelected!(_date);
+                          widget.onDateSelected!(_date.toString());
                           setState(() {
                             selectedCalenderDate =
                                 _startDate?.add(Duration(days: index));
@@ -181,7 +189,7 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              Utils.getDayOfWeek(_date!),
+                              Utils.getDayOfWeek(_date),
                               style: TextStyle(
                                   color: diffDays != 0
                                       ? widget.colorOfWeek ?? secondaryTextColor
@@ -210,39 +218,57 @@ class _CalendarState extends State<AnimatedHorizontalCalendar> {
                 );
               },
             ),
-            SizedBox(
-              width: 10,
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 20, top: 8),
-              color: backgroundColor,
-              child: InkWell(
-                onTap: () async {
-                  DateTime? date = await selectDate();
-                  widget.onDateSelected!(Utils.getDate(date!));
-                  setState(() => selectedCalenderDate = date);
-                },
-                child: Container(
-                  height: double.infinity,
-                  width: (width - 10) * 0.1428,
-                  decoration: BoxDecoration(
-                      color: widget.tableCalenderButtonColor ?? primaryColor,
-                      border: Border.all(color: grey, width: 1),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: widget.tableCalenderIcon,
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 20, top: 8),
+                child: GestureDetector(
+                  onTap: () async {
+                    DateTime date = Platform.isIOS
+                        ? await selectDateFromIOS() ?? DateTime.now()
+                        : await selectDateFromAndroid() ?? DateTime.now();
+                    widget.onDateSelected!(Utils.getDate(date));
+                    setState(() => selectedCalenderDate = date);
+                  },
+                  child: Container(
+                    height: double.infinity,
+                    width: (width - 10) * 0.1428,
+                    decoration: BoxDecoration(
+                        color: widget.tableCalenderButtonColor ?? primaryColor,
+                        border: Border.all(color: grey, width: 1),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: widget.tableCalenderIcon,
+                  ),
                 ),
               ),
             ),
-            SizedBox(
-              width: 15,
-            )
           ],
         ),
       ),
     );
   }
 
-  Future<DateTime?> selectDate() async {
+  Future<DateTime?> selectDateFromIOS() async {
+    return await showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text('Calendar'),
+            content: AdoptiveCalendar(
+              initialDate: DateTime.now(),
+            ),
+            actions: [
+              CupertinoButton(
+                  child: Text('Select'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })
+            ],
+          );
+        });
+  }
+
+  Future<DateTime?> selectDateFromAndroid() async {
     return await showDatePicker(
       context: context,
       initialDatePickerMode: DatePickerMode.day,
